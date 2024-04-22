@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Color Canvas Drawing</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        canvas {
+            border: 2px solid #000;
+            cursor: crosshair;
+        }
+        input[type="text"] {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="drawingCanvas" width="600" height="400"></canvas>
+    <div>
+        <input type="text" id="colorInput" placeholder="Enter color name (e.g., red)">
+        <button onclick="changeColor()">Confirm</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let drawingColor = 'black'; // Default color
+
+        const validColors = ['red', 'blue', 'green', 'black', 'yellow', 'purple', 'pink', 'grey'];
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        function startDrawing(event) {
+            isDrawing = true;
+            const x = event.offsetX;
+            const y = event.offsetY;
+            [lastX, lastY] = [x, y];
+        }
+
+        function draw(event) {
+            if (!isDrawing) return;
+
+            const x = event.offsetX;
+            const y = event.offsetY;
+
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = drawingColor;
+
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+
+            [lastX, lastY] = [x, y];
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function changeColor() {
+            const colorInput = document.getElementById('colorInput').value.toLowerCase(); // Convert input to lowercase
+            if (validColors.includes(colorInput)) {
+                drawingColor = colorInput;
+            } else {
+                alert('Invalid color name! Please enter one of: red, blue, green, black, yellow, purple, pink, grey');
+            }
+        }
+    </script>
+</body>
+</html>
